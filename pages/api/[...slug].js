@@ -32,6 +32,7 @@ export default (req, res) => {
   console.log(req.query);
 
   return new Promise((resolve, reject) => {
+    req.url = req.url.replace("/api", "/");
     proxy.web(
       req,
       res,
