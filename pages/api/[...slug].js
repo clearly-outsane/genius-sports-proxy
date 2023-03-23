@@ -1,6 +1,7 @@
 import httpProxyMiddleware from "next-http-proxy-middleware";
 import Cors from "cors";
 import httpProxy from "http-proxy";
+import NextCors from "nextjs-cors";
 
 // Initializing the cors middleware
 // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
@@ -28,12 +29,17 @@ export const config = {
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (req, res) => {
+export default async (req, res) => {
   console.log(req.query);
-
+  await NextCors(req, res, {
+    // Options
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    origin: "*",
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  });
   return new Promise((resolve, reject) => {
-    delete req.headers.host;
     req.url = req.url.replace("/api", "/");
+
     proxy.web(
       req,
       res,
